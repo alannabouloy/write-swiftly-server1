@@ -4,7 +4,7 @@ const {
   DEV_DATABASE_HOST, 
   DEV_DATABASE_USERNAME, 
   DEV_DATABASE_PASSWORD,
-  DATABASE_NAME,
+  DEV_DATABASE_NAME,
   TEST_DATABASE_USERNAME,
   TEST_DATABASE_PASSWORD,
   TEST_DATABASE_HOST,
@@ -14,7 +14,7 @@ module.exports = {
   development: {
     username: DEV_DATABASE_USERNAME,
     password: DEV_DATABASE_PASSWORD,
-    database: DATABASE_NAME,
+    database: DEV_DATABASE_NAME,
     host: DEV_DATABASE_HOST,
     dialect: "postgres"
   },
@@ -27,10 +27,10 @@ module.exports = {
   },
   /*
   production: {
-    username: "root",
-    password: null,
-    database: "database_production",
-    host: "127.0.0.1",
-    dialect: "mysql"
+    username: DATABASE_USERNAME,
+    password: DATABASE_PASSWORD,
+    database: DATABASE_NAME,
+    host: DATABASE_HOST
+    dialect: "postgres"
   }*/ //these don't come into play until app is in production so config them after
 }

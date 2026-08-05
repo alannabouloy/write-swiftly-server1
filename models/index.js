@@ -5,12 +5,56 @@ const path = require('path');
 const Sequelize = require('sequelize');
 const process = require('process');
 const basename = path.basename(__filename);
-const { DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_HOST } = require('../src/config');
+const { development, test, production } = require('../config/database.config');
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../config/database.config.js')[env];
 
-const db = new Sequelize(DATABASE_NAME, DATABASE_USERNAME, DATABASE_PASSWORD, {
-  host: DATABASE_HOST,
+const DATABASE_NAME = (productEnv) => {
+  switch(productEnv) {
+    case "prod":
+      return production.database;
+    case "test":
+      return test.database;
+    default: 
+    return development.database;
+  }
+}
+
+const DATABASE_USERNAME = (productEnv) => {
+  switch(productEnv) {
+    case "prod":
+      return production.username;
+    case "test":
+      return test.username;
+    default:
+      return development.username;
+  }
+}
+
+const DATABASE_PASSWORD = (productEnv) => {
+  switch(productEnv) {
+    case "prod":
+      return production.password;
+    case "test":
+      return test.password;
+    default:
+      return development.password;
+  }
+}
+
+const DATABASE_HOST = (productEnv) => {
+  switch(productEnv) {
+    case "prod":
+      return production.host;
+    case "test":
+      return test.host;
+    default:
+      return development.host;
+  }
+}
+
+const db = new Sequelize(DATABASE_NAME(env), DATABASE_USERNAME(env), DATABASE_PASSWORD(env), {
+  host: DATABASE_HOST(env),
   dialect: 'postgres'
 })
 

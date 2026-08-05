@@ -3,7 +3,6 @@ const authController = require('../src/controllers').auth;
 const db = require('../models');
 const User = db.User;
 const { expect } = require('chai');
-const supertest = require('supertest');
 const helpers = require('./test-helpers');
 const { sign } = require('jsonwebtoken');
 
