@@ -30,8 +30,8 @@ function makeUsersArray(){
             role: 'user',
             createdAt: '2029-01-22T16:28:32.615Z'
         }
-    ]
-}
+    ];
+};
 
 //makeSongArray creates an array of test songs to add to db
 function makeSongArray(){
@@ -61,24 +61,29 @@ function makeSongArray(){
             createdAt: '2029-01-22T16:28:32.615Z',
             updatedAt: '2029-01-22T16:28:32.615Z'
         }
-    ]
-}
+    ];
+};
 //seedUsers function to add testUsers to test db
 function seedUsers(users) {
 //map through to hash passwords
     const preppedUsers = users.map(user => ({
         ...user,
         password: bcrypt.hashSync(user.password, 1)
-    }))
+    }));
 
-    return User.bulkCreate(preppedUsers)
-}
+    return User.bulkCreate(preppedUsers);
+};
     
 //seedSongs function to add songs to test db
+function seedSongs(songs){
+    return Song.bulkCreate(songs);
+};
 //makeAuthHeader creates auth token for testing
+
 
 module.exports = {
     makeUsersArray,
     makeSongArray,
-    seedUsers
-}
+    seedUsers,
+    seedSongs
+};

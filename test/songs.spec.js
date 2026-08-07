@@ -1,3 +1,11 @@
+const app = require('../src/app');
+const songsController = require('../src/controllers/songs.controller');
+const db = require('../models');
+const Song = db.Song;
+const { expect } = require('chai');
+const helpers = require('./test-helpers');
+const supertest = require('supertest');
+
 /* 
 TODO
 - songList
