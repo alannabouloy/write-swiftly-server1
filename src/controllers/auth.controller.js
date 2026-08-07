@@ -21,8 +21,9 @@ exports.signUp = ( req, res, ) => {
 
 exports.signIn = (req, res ) => {
     const signInError = {
-        accessToken: null,
-        error: "Invalid username or password"
+        error: {
+            message: "Invalid username or password"
+        }
     };
     return User.findOne({ where: { username: req.body.username }})
         .then( user => {

@@ -5,6 +5,7 @@ const User = db.User;
 const { expect } = require('chai');
 const helpers = require('./test-helpers');
 const { sign } = require('jsonwebtoken');
+const supertest = require('supertest');
 
 describe('Auth Endpoints', () => {
     const testUsers = helpers.makeUsersArray();
@@ -16,7 +17,7 @@ describe('Auth Endpoints', () => {
 
     describe('Sign up endpoint', () => {
 
-        const requiredFields = ['username', 'password', 'email'];
+        const requiredFields = ['username', 'password', 'email']; //these wouod be the required fields for signing up as a new user
 
         requiredFields.forEach(field => {
             const signupAttemptBody = {
@@ -26,7 +27,7 @@ describe('Auth Endpoints', () => {
             }
 
             it(`responds 400 required error if ${field} is missing`, () => {
-                delete signupAttemptBody[field];
+                delete signupAttemptBody[field]; //removes the field tested so that we can see error message returned when missing specific field
 
                 return supertest(app)
                     .post('/signup')
@@ -225,16 +226,74 @@ describe('Auth Endpoints', () => {
         })
     })
     describe('Sign in endpoint', () => {
-        it('responds 400 error if required fields missing', () => {
+
+        const requiredFields = ['username', 'password']; //these would be the required fields for signing in as an existing user
+        requiredFields.forEach(field => {
+            const signinAttemptBody = {
+                username: testUser.username,
+                password: testUser.password
+            }
+            it(`responds 400 required error if ${field} is missing`, () => {
+                delete signinAttemptBody[field];
+
+                return supertest(app)
+                    .post('/signin')
+                    .send(signinAttemptBody)
+                    .expect(400, {
+                        error: {
+                            message: `Request body must include a ${field} value`
+                        }
+                    })
+            })
+        })
+        it('responds 401 unauthorized if username does not exist', async () => {
+            await helpers.seedUsers(testUsers);
+            const signinAttemptBody = {
+                username: "notAUser",
+                password: "notAPassword"
+            }
+
+            return supertest(app)
+                .post('/signin')
+                .send(signinAttemptBody)
+                .expect(401, {
+                    error: {
+                        message: 'Invalid username or password'
+                    }
+                })
+        })
+        it('responds 401 unauthorized if password does not match', async () => {
+            await helpers.seedUsers(testUsers);
+            const signinAttemptBody = {
+                username: testUser.username,
+                password: 'wrongPassword1!'
+            }
+
+            return supertest(app)
+                .post('/signin')
+                .send(signinAttemptBody)
+                .expect(401, {
+                    error: {
+                        message: 'Invalid username or password'
+                    }
+                })
 
         })
-        it('responds 401 unauthorized if username does not exist', () => {
+        it('responds 200 with jwt if signin is successful', async () => {
+            await helpers.seedUsers(testUsers);
+            const signinAttemptBody = {
+                username: testUser.username,
+                password: testUser.password
+            }
 
-        })
-        it('responds 401 unauthorized if password does not match', () => {
-
-        })
-        it('responds 200 with jwt if signin is successful', () => {
+            return supertest(app)
+            .post('/signin')
+            .send(signinAttemptBody)
+            .expect(200)
+            .expect(res => {
+                expect(res.body.accessToken).to.be.a('string')
+                expect(res.body.accessToken.length).to.be.above(0);
+            })
 
         })
     })
