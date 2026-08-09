@@ -6,6 +6,41 @@ const { expect } = require('chai');
 const helpers = require('./test-helpers');
 const supertest = require('supertest');
 
+
+describe('Songs endpoints', () => {
+    const testSongs = helpers.makeSongArray();
+    const testSong = testSongs[0];
+
+    before('clean the table', () => db.query('TRUNCATE TABLE "Songs" RESTART IDENTITY CASCADE'));
+    afterEach('clean the table', ()=> db.query('TRUNCATE TABLE "Songs" RESTART IDENTITY CASCADE'));
+
+    describe('/songs endpoint', () => {
+
+        //Unhappy Path
+        it('responds 404 when no songs in list', () => {});
+        //Happy Path
+        it('responds 200 and returns a list of songs', ()=> {});
+
+    });
+
+    describe('/songs:title endpoint', () => {
+        //Unhappy Path
+        it('responds 404 when no song matches title given', ()=> {});
+        it('responds 400 when invalid request', ()=> {});
+
+        //Happy Path
+        it('responds 200 and returns song details', ()=> {});
+    });
+
+    describe('/songs/add endpoint', ()=> {
+        //Unhappy Paths
+        it('responds 401 Unauthorized when unauthorized access is attempted', () => {});
+        it('responds 400 invalid request when request is invalid', ()=> {});
+
+        //Happy Path
+        it('responds 201 when song successfully added ', ()=> {});
+    });
+});
 /* 
 TODO
 - songList
