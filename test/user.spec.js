@@ -1,3 +1,10 @@
+const app = require('../src/app');
+const usersController = require('../src/controllers/users.controller');
+const db = require('../models');
+const User = db.User;
+const { expect } = require('chai');
+const helpers = require('./test-helpers');
+const supertest = require('supertest');
 /* 
 TODO
 Happy Path
