@@ -17,9 +17,19 @@ describe('Songs endpoints', () => {
     describe('/songs endpoint', () => {
 
         //Unhappy Path
-        it('responds 404 when no songs in list', () => {});
+        it('responds 404 when no songs in list', () => {
+            return supertest(app)
+                .get('/songs')
+                .expect(404, {error: 'No Songs Found'})
+        });
         //Happy Path
-        it('responds 200 and returns a list of songs', ()=> {});
+        it('responds 200 and returns a list of songs', async ()=> {
+            await helpers.seedSongs(testSongs);
+
+            return supertest(app)
+                .get('/songs')
+                .expect(200, testSongs);
+        });
 
     });
 

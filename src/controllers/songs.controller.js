@@ -3,7 +3,7 @@ const Songs = require('../../models').Song;
 exports.songList = (req, res) => {
     return Songs.findAll()
         .then( songs => {
-            if(!songs) {
+            if(songs.length <= 0) {
                 res.status(404).send({error: "No Songs Found"});
             } else {
                 res.status(200).send(songs)
