@@ -3,6 +3,7 @@ const songsController = require('../src/controllers/songs.controller');
 const db = require('../models');
 const Song = db.Song;
 const { expect } = require('chai');
+const jest = require('jest');
 const helpers = require('./test-helpers');
 const supertest = require('supertest');
 
@@ -35,11 +36,30 @@ describe('Songs endpoints', () => {
 
     describe('/songs:title endpoint', () => {
         //Unhappy Path
-        it('responds 404 when no song matches title given', ()=> {});
-        it('responds 400 when invalid request', ()=> {});
+        it('responds 404 when no song matches title given', async ()=> {
+            await helpers.seedSongs(testSongs);
+
+            return supertest(app)
+                .get('/song/NotASong')
+                .expect(404, {
+                    error: "No Song Found",
+                    params: { title: "NotASong"}
+                })
+        });
 
         //Happy Path
-        it('responds 200 and returns song details', ()=> {});
+        it('responds 200 and returns song details', async ()=> { //this test is not passing for now. needs further looking into.
+            await helpers.seedSongs(testSongs);
+
+            const songTitle = testSong.title;
+
+            return await supertest(app)
+                .get(`/song/${songTitle}`)
+                .expect(200)
+                .expect(res => {
+                    expect(res.body.title).to.equal(songTitle)
+                });
+        });
     });
 
     describe('/songs/add endpoint', ()=> {
