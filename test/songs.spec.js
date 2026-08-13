@@ -3,6 +3,7 @@ const songsController = require('../src/controllers/songs.controller');
 const db = require('../models');
 const Song = db.Song;
 const { expect } = require('chai');
+const mocha = require('mocha');
 const jest = require('jest');
 const helpers = require('./test-helpers');
 const supertest = require('supertest');
@@ -16,7 +17,6 @@ describe('Songs endpoints', () => {
     afterEach('clean the table', ()=> db.query('TRUNCATE TABLE "Songs" RESTART IDENTITY CASCADE'));
 
     describe('/songs endpoint', () => {
-
         //Unhappy Path
         it('responds 404 when no songs in list', () => {
             return supertest(app)
@@ -34,7 +34,7 @@ describe('Songs endpoints', () => {
 
     });
 
-    describe('/songs:title endpoint', () => {
+    describe('/songs:title endpoint', async () => {
         //Unhappy Path
         it('responds 404 when no song matches title given', async ()=> {
             await helpers.seedSongs(testSongs);
@@ -48,23 +48,29 @@ describe('Songs endpoints', () => {
         });
 
         //Happy Path
-        it('responds 200 and returns song details', async ()=> { //this test is not passing for now. needs further looking into.
+        it('responds 200 and returns song details', async ()=> { 
             await helpers.seedSongs(testSongs);
 
             const songTitle = testSong.title;
 
-            return await supertest(app)
+            return supertest(app)
                 .get(`/song/${songTitle}`)
                 .expect(200)
                 .expect(res => {
-                    expect(res.body.title).to.equal(songTitle)
+                   expect(res.body.title).to.equal(songTitle)
                 });
         });
     });
 
     describe('/songs/add endpoint', ()=> {
+        before('clean the table', () => db.query('TRUNCATE TABLE "Users" RESTART IDENTITY CASCADE'));
+        afterEach('clean the table', ()=> db.query('TRUNCATE TABLE "Users" RESTART IDENTITY CASCADE'));
         //Unhappy Paths
-        it('responds 401 Unauthorized when unauthorized access is attempted', () => {});
+        it('responds 401 Unauthorized when unauthorized access is attempted', async () => {
+            const testUsers = helpers.makeUsersArray();
+            const testUser = testUsers[1];
+            await helpers.seedUsers(testUsers);
+        });
         it('responds 400 invalid request when request is invalid', ()=> {});
 
         //Happy Path
